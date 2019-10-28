@@ -55,8 +55,9 @@ export default {
 
             let d3Chart = this;
             // Area gradient fill
+            /*
             this.area = d3
-                .area()
+                .line()
                 .x(d => {
                     return d3Chart.x(d.date);
                 })
@@ -65,6 +66,18 @@ export default {
                     return d3Chart.y(d[d3Chart.selectedSensor.key]);
                 })
                 .curve(d3.curveBasis);
+
+            */
+
+            this.area = d3
+                .line()
+                .x(d => {
+                    return d3Chart.x(d.date);
+                })
+                .y(d => {
+                    return d3Chart.y(d[d3Chart.selectedSensor.key]);
+                })
+                .curve(d3.curveBundle);
 
             this.x = d3
                 .scaleTime()
@@ -141,15 +154,17 @@ export default {
                 });
 
             // Add the line
+            //.attr("fill", "")
             this.line
                 .append("path")
                 .data([this.filteredData])
                 .attr("class", "area")
-                .attr("fill", "url(#area-gradient)")
-                .attr("stroke", "none")
+                .attr("stroke", "url(#area-gradient)")
+                .attr("stroke-width", 3)
+                .attr("fill", "none")
                 .transition()
                 .duration(1000)
-                .attr("d", this.area);
+                .attr("d", this.area)
 
             // Add the brushing
             this.chart.svg
@@ -171,7 +186,7 @@ export default {
                 .attr("cy", d => {
                     return d3Chart.y(d[d3Chart.selectedSensor.key]);
                 })
-                .attr("r", 2)
+                .attr("r", 1)
                 .attr("fill", d => d3Chart.colors(d[d3Chart.selectedSensor.key]));
             // tooltip will be added back
 
@@ -264,15 +279,14 @@ export default {
 
             // area gradient fill
             this.area = d3
-                .area()
+                .line()
                 .x(d => {
                     return d3Chart.x(d.date);
                 })
-                .y0(this.layout.height - (this.layout.marginBottom + this.layout.marginTop))
-                .y1(d => {
+                .y(d => {
                     return d3Chart.y(d[d3Chart.selectedSensor.key]);
                 })
-                .curve(d3.curveBasis);
+                .curve(d3.curveBundle);
 
             // update line area
             this.line
